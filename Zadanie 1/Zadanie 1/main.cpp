@@ -26,10 +26,11 @@ int main()
 		system("pause");
 		exit(0);
 	}
-	wyb--;	//numerowanie od 0 do 5, zamiast od 1 do 6
-	double (*funkcja)(float) = tab_wsk_do_funkcji[wyb];	//przypisujemy funkcje do wskaznika
+	//wyb--;	//numerowanie od 0 do 5, zamiast od 1 do 6
+	//double (*funkcja)(float) = tab_wsk_do_funkcji[wyb];	//przypisujemy funkcje do wskaznika
 	system("cls");
-	cout << funkcja(3) << endl;
+	//cout << funkcja(3) << endl;
+	cout << tab_wsk_do_funkcji[wyb - 1](3) << endl;
 	system("pause");
 }
 
