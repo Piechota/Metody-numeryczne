@@ -13,24 +13,21 @@ double wielXwykl(float x);		//funkcja obliczajaca sin (3^x)
 
 int main()
 {
-	double (*tab_wsk_do_funkcji[6])(float);	//Tablica wskaznikow na funkcje
-	tab_wsk_do_funkcji[0] = wielomian;
-	tab_wsk_do_funkcji[1] = trygonometria;
-	tab_wsk_do_funkcji[2] = wykladnicza;
-	tab_wsk_do_funkcji[3] = wielXtryg;
-	tab_wsk_do_funkcji[4] = trygXwykl;
-	tab_wsk_do_funkcji[5] = wielXwykl;
+	double (*funkcje[6])(float);	//Tablica wskaznikow na funkcje
+	funkcje[0] = wielomian;
+	funkcje[1] = trygonometria;
+	funkcje[2] = wykladnicza;
+	funkcje[3] = wielXtryg;
+	funkcje[4] = trygXwykl;
+	funkcje[5] = wielXwykl;
 	int wyb = menu();	//Wybieramy funkcje
 	if (wyb == 7)
 	{
 		system("pause");
 		exit(0);
 	}
-	//wyb--;	//numerowanie od 0 do 5, zamiast od 1 do 6
-	//double (*funkcja)(float) = tab_wsk_do_funkcji[wyb];	//przypisujemy funkcje do wskaznika
 	system("cls");
-	//cout << funkcja(3) << endl;
-	cout << tab_wsk_do_funkcji[wyb - 1](3) << endl;
+	cout << "Wybrana funkcja dla arg x = 3:" << endl << funkcje[wyb - 1](3) << endl << endl;
 	system("pause");
 }
 
