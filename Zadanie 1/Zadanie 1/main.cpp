@@ -4,13 +4,13 @@
 
 using namespace std;
 
-int menu();
-double wielomian(float x);	//funkcja obliczajaca 2x^3 + 4x^2 - 7
+string menu();
+/*double wielomian(float x);	//funkcja obliczajaca 2x^3 + 4x^2 - 7
 double trygonometria(float x); //funkcja obliczajaca sinx
 double wykladnicza(float x);	//funkcja obliczajaca 5^x
 double wielXtryg(float x);		//funkcja obliczajaca 2(sinx)^3 - 3x + 1
 double trygXwykl(float x);		//funkcja obliczajaca 5^x + 7x*4^x
-double wielXwykl(float x);		//funkcja obliczajaca sin (3^x)
+double wielXwykl(float x);		//funkcja obliczajaca sin (3^x)*/
 
 string funk;		//pelna funkcja
 double wynikFunkcji(double X, string funkcja);	//wartosc funkcji w X
@@ -34,10 +34,9 @@ int main()
 	cout << "Wybrana funkcja dla arg x = 3:" << endl << funkcje[wyb - 1](3) << endl << endl;
 	*/
 
-	getline(cin, funk);
-	cout << endl;
-	cout << wynikFunkcji(1.0, funk) << endl;
+	funk = menu();
 	system("pause");
+	return 0;
 }
 
 double wynikFunkcji(double X, string funkcja)
@@ -317,9 +316,9 @@ double wynikFunkcji(double X, string funkcja)
 	return stod(strFunkcji);
 }
 
-int menu()
+string menu()
 {
-	int wyb;
+	/*int wyb;
 	do
 	{
 		system("cls");
@@ -333,9 +332,14 @@ int menu()
 			<< "Wybierz funkcje: ";
 		cin >> wyb;
 	} while (wyb <1 || wyb >7);
-	return wyb;
-}
+	return wyb;*/
+	string funkcja;
 
+	cout << "Wprowadz wzor funkcji:" << endl;
+	getline(cin, funkcja);
+	return funkcja;
+}
+/*
 double wielomian(float x)
 {
 	return (2 * pow(x, 3) + 4 * pow(x, 2) - 7);
@@ -365,3 +369,4 @@ double wielXwykl(float x)
 {
 	return sin(pow(3, x));
 }
+*/
