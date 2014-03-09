@@ -144,7 +144,16 @@ void menu(string &funkcja)
 
 void rysuj_wykres(double a, double b, string &funkcja)
 {
-	Gnuplot::set_GNUPlotPath("E:/gnuplot/bin");
+	if (!(Gnuplot::set_GNUPlotPath("E:/gnuplot/bin") || Gnuplot::set_GNUPlotPath("C:/gnuplot/bin")))
+	{
+		string path;
+		do{
+			path.clear();
+			cout << endl << "Plik folder nie znaleziony!" << endl;
+			cout << "Prosze podac sciezke do gnuplot/bin" << endl;
+			getline(cin, path);
+		}while(!Gnuplot::set_GNUPlotPath(path));
+	}
 
 	try
 	{
