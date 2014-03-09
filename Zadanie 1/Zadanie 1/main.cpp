@@ -14,8 +14,10 @@ double trygXwykl(float x);		//funkcja obliczajaca 5^x + 7x*4^x
 double wielXwykl(float x);		//funkcja obliczajaca sin (3^x)*/
 
 string funk;		//pelna funkcja
-double bisekcja(double A, double B, float n, bool iteracje, string &funkcja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
+bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
 void rysuj_wykres(double a, double b, string &funkcja);
+double X, Y; //pierwiastek
+bool pierw; //czy znaleziono
 
 int main()
 {
@@ -42,36 +44,32 @@ int main()
 
 
 
-double bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
+bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 {
 	if (iteracje && n == 0)
 	{
 		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
-		return 0;
+		return false;
 	}
 
 	if (wynikFunkcji((A + B) / 2, funkcja) == 0)
 	{
 		cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
 		cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
-		return (A + B) / 2;
+
+		X = (A + B) / 2;
+		Y = 0.0f;
+
+		return true;
 	}
 
-	cout <<"Wartosc funkcji w polowie przedzialu: " << wynikFunkcji((A + B) / 2, funkcja) << endl;
-
-	double zero1=0;
-	double zero2=0;
 	if (wynikFunkcji(A, funkcja)*wynikFunkcji((A + B) / 2, funkcja) < 0)
-		zero1 = bisekcja(A, (A + B) / 2, n - 1, true, funkcja);
+		bisekcja(A, (A + B) / 2, n - 1, true, funkcja);
 	if (wynikFunkcji(B, funkcja)*wynikFunkcji((A + B) / 2, funkcja) < 0)
-		zero2 = bisekcja((A + B) / 2, B, n - 1, true, funkcja);
+		bisekcja((A + B) / 2, B, n - 1, true, funkcja);
 
-	if (zero1 > 0)
-		return zero1;
-	if (zero2 > 0)
-		return zero2;
 
-	return 0;
+	return false;
 }
 
 void menu(string &funkcja)
@@ -132,7 +130,7 @@ void menu(string &funkcja)
 			switch (zatrzymanie)
 			{
 			case 'b':
-				bisekcja(a, b, n, true, funkcja);
+				pierw = bisekcja(a, b, n, true, funkcja);
 				break;
 			}
 
@@ -182,6 +180,16 @@ void rysuj_wykres(double a, double b, string &funkcja)
 			}
 			wykres->plot_xy(x, y, funkcja);
 		}
+
+		vector<double> x;
+		vector<double> y;
+		x.push_back(X);
+		y.push_back(Y);
+
+		wykres->set_style("points");
+		wykres->set_pointsize(2.0);
+
+		wykres->plot_xy(x, y, "Pierwiastek");
 		system("pause");
 
 		delete wykres;
