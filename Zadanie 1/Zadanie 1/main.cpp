@@ -102,36 +102,72 @@ void menu(string &funkcja)
 		//zebranie informacji o metodzie liczenia miejsc zerowych
 		cout << endl << "Wybierz metode:" << endl << "0. Wyjscie" << endl << "1. Bisekcjia" << endl;
 		cin >> wyb;
-		cout << endl << "Podaj sposob zatrzymanai:" << endl << "b) Zadana liczba iteracji" << endl;
-		cin >> zatrzymanie;
-		cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
-		cin >> a;
-		cout << endl << "B: ";
-		cin >> b;
-		while (wynikFunkcji(a, funkcja)*wynikFunkcji(b, funkcja) >= 0)
+		//Jesli wybor to wyjscie, to po co mamy wybierac dalej ? :D
+		if (wyb != 0)
 		{
-			cout << endl << "Znaki przedzialu sa takie same!" << endl;
-			if (wynikFunkcji((a + b) / 2, funkcja) == 0)
-				cout << "ale srodek przedzialu jest miejscem zerowym!" << endl;
-
+			cout << endl << "Podaj sposob zatrzymanai:" << endl << "b) Zadana liczba iteracji" << endl;
+			cin >> zatrzymanie;
 			cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
 			cin >> a;
 			cout << endl << "B: ";
 			cin >> b;
+			while (wynikFunkcji(a, funkcja)*wynikFunkcji(b, funkcja) >= 0)
+			{
+				cout << endl << "Znaki przedzialu sa takie same!" << endl;
+				if (wynikFunkcji((a + b) / 2, funkcja) == 0)
+					cout << "ale srodek przedzialu jest miejscem zerowym!" << endl;
+
+				cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
+				cin >> a;
+				cout << endl << "B: ";
+				cin >> b;
+			}
+
+			cout << endl << "Podaj wartosc warunku konczacego:" << endl;
+			cin >> n;
+
+			switch (zatrzymanie)
+			{
+			case 'b':
+				bisekcjia(a, b, n, true, funkcja);
+				break;
+			}
+
+			Gnuplot::set_GNUPlotPath("E:/gnuplot/bin");
+
+			try
+			{
+				Gnuplot* wykres = new Gnuplot;
+				wykres->set_title("Wykres funkcji " + funkcja + " na przedziale <" + to_string(a) + ", " + to_string(b) + ">");
+				wykres->set_style("lines");
+				wykres->set_xlabel("X");
+				wykres->set_ylabel("Y");
+				wykres->set_grid();
+				//gnuplot nie obsluguje funkcji ktore sa w postaci:
+				//a^b, trzeba by bylo zrobic zamiane z np. x^3 na x*x*x
+				//jesli to by sie ominelo to mozna uzyc tej linijki zamiast bawic sie w wektory
+				//gnuplot normalnie lapie zlozenia typu sin(x)-5*cos(x)
+				//wykres.plot_equation(funkcja);
+				vector<double> x;
+				vector<double> y;
+				for (double i = a; i <= b; i += 0.1)
+				{
+					x.push_back(i);
+					y.push_back(wynikFunkcji(i, funkcja));
+				}
+				wykres->plot_xy(x, y, funkcja);
+
+				system("pause");
+
+				delete wykres;
+			}
+			catch (GnuplotException ge)
+			{
+				cout << ge.what() << endl;
+
+				system("pause");
+			}
 		}
-
-		cout << endl << "Podaj wartosc warunku konczacego:" << endl;
-		cin >> n;
-
-		switch (zatrzymanie)
-		{
-		case 'b':
-			bisekcjia(a, b, n, true, funkcja);
-			break;
-		}
-
-		system("pause");
-
 	} while (wyb != 0);
 }
 /*
