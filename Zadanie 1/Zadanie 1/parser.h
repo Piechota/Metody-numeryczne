@@ -66,7 +66,7 @@ double wynikFunkcji(double X, string funkcja)
 
 		int i = 3;
 
-		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || strFunkcji[found + i] == '-'))
+		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || ( i == 3 && strFunkcji[found + i] == '-')))
 		{
 			liczba.insert(liczba.end(), strFunkcji[found + i]);
 			i++;
@@ -100,7 +100,7 @@ double wynikFunkcji(double X, string funkcja)
 
 		int i = 3;
 
-		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || strFunkcji[found + i] == '-'))
+		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || (i == 3 && strFunkcji[found + i] == '-')))
 		{
 			liczba.insert(liczba.end(), strFunkcji[found + i]);
 			i++;
@@ -134,7 +134,7 @@ double wynikFunkcji(double X, string funkcja)
 
 		int i = 2;
 
-		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || strFunkcji[found + i] == '-'))
+		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || (i == 2 && strFunkcji[found + i] == '-')))
 		{
 			liczba.insert(liczba.end(), strFunkcji[found + i]);
 			i++;
@@ -180,7 +180,7 @@ double wynikFunkcji(double X, string funkcja)
 
 		i = 1;
 
-		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || strFunkcji[found + i] == '-'))
+		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || (i == 1 && strFunkcji[found + i] == '-')))
 		{
 			liczba2.insert(liczba2.end(), strFunkcji[found + i]);
 			i++;
@@ -231,7 +231,7 @@ double wynikFunkcji(double X, string funkcja)
 
 		i = 1;
 
-		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || strFunkcji[found + i] == '-'))
+		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || (i == 1 && strFunkcji[found + i] == '-')))
 		{
 			liczba2.insert(liczba2.end(), strFunkcji[found + i]);
 			i++;
@@ -290,7 +290,7 @@ double wynikFunkcji(double X, string funkcja)
 
 		i = 1;
 
-		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || strFunkcji[found + i] == '-'))
+		while (found + i < strFunkcji.length() && (isdigit(strFunkcji[found + i]) || strFunkcji[found + i] == '.' || (i == 1 && strFunkcji[found + i] == '-')))
 		{
 			liczba2.insert(liczba2.end(), strFunkcji[found + i]);
 			i++;

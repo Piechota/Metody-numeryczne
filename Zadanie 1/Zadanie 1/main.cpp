@@ -52,6 +52,8 @@ double bisekcjia(double A, double B, float n, bool iteracje, string &funkcja)
 
 	if (wynikFunkcji((A + B) / 2, funkcja) == 0)
 	{
+		cout << "polowa przedzialu: " << wynikFunkcji((A + B) / 2, funkcja) << endl;
+
 		cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
 		return (A + B) / 2;
 	}
