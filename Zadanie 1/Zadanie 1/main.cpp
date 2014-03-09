@@ -14,7 +14,8 @@ double trygXwykl(float x);		//funkcja obliczajaca 5^x + 7x*4^x
 double wielXwykl(float x);		//funkcja obliczajaca sin (3^x)*/
 
 string funk;		//pelna funkcja
-double bisekcjia(double A, double B, float n, bool iteracje, string &funkcja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
+double bisekcja(double A, double B, float n, bool iteracje, string &funkcja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
+void rysuj_wykres(double a, double b, string &funkcja);
 
 int main()
 {
@@ -41,7 +42,7 @@ int main()
 
 
 
-double bisekcjia(double A, double B, float n, bool iteracje, string &funkcja)
+double bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 {
 	if (iteracje && n == 0)
 	{
@@ -56,14 +57,14 @@ double bisekcjia(double A, double B, float n, bool iteracje, string &funkcja)
 		return (A + B) / 2;
 	}
 
-	cout <<"polowa przedzialu: " << wynikFunkcji((A + B) / 2, funkcja) << endl;
+	cout <<"Wartosc funkcji w polowie przedzialu: " << wynikFunkcji((A + B) / 2, funkcja) << endl;
 
 	double zero1=0;
 	double zero2=0;
 	if (wynikFunkcji(A, funkcja)*wynikFunkcji((A + B) / 2, funkcja) < 0)
-		zero1 = bisekcjia(A, (A + B) / 2, n - 1, true, funkcja);
+		zero1 = bisekcja(A, (A + B) / 2, n - 1, true, funkcja);
 	if (wynikFunkcji(B, funkcja)*wynikFunkcji((A + B) / 2, funkcja) < 0)
-		zero2 = bisekcjia((A + B) / 2, B, n - 1, true, funkcja);
+		zero2 = bisekcja((A + B) / 2, B, n - 1, true, funkcja);
 
 	if (zero1 > 0)
 		return zero1;
@@ -77,7 +78,7 @@ void menu(string &funkcja)
 {
 	int wyb;				//sposob obliczania miejsca zerowego
 	char zatrzymanie;		//warunek zatrzymania
-	float n;				//ilosc iteracji lub dokladnosc (zalerzy od warunku zatrzymania)
+	float n;				//ilosc iteracji lub dokladnosc (zalezy od warunku zatrzymania)
 	double a, b;			//przedzialy
 	/*do
 	{
@@ -97,10 +98,12 @@ void menu(string &funkcja)
 		system("cls");
 
 		cout << "Wprowadz wzor funkcji:" << endl;
+		cin.clear();
+		cin.sync();
 		getline(cin, funkcja);
 
 		//zebranie informacji o metodzie liczenia miejsc zerowych
-		cout << endl << "Wybierz metode:" << endl << "0. Wyjscie" << endl << "1. Bisekcjia" << endl;
+		cout << endl << "Wybierz metode:" << endl << "0. Wyjscie" << endl << "1. Bisekcja" << endl;
 		cin >> wyb;
 		//Jesli wybor to wyjscie, to po co mamy wybierac dalej ? :D
 		if (wyb != 0)
@@ -129,47 +132,59 @@ void menu(string &funkcja)
 			switch (zatrzymanie)
 			{
 			case 'b':
-				bisekcjia(a, b, n, true, funkcja);
+				bisekcja(a, b, n, true, funkcja);
 				break;
 			}
 
-			Gnuplot::set_GNUPlotPath("E:/gnuplot/bin");
-
-			try
-			{
-				Gnuplot* wykres = new Gnuplot;
-				wykres->set_title("Wykres funkcji " + funkcja + " na przedziale <" + to_string(a) + ", " + to_string(b) + ">");
-				wykres->set_style("lines");
-				wykres->set_xlabel("X");
-				wykres->set_ylabel("Y");
-				wykres->set_grid();
-				//gnuplot nie obsluguje funkcji ktore sa w postaci:
-				//a^b, trzeba by bylo zrobic zamiane z np. x^3 na x*x*x
-				//jesli to by sie ominelo to mozna uzyc tej linijki zamiast bawic sie w wektory
-				//gnuplot normalnie lapie zlozenia typu sin(x)-5*cos(x)
-				//wykres.plot_equation(funkcja);
-				vector<double> x;
-				vector<double> y;
-				for (double i = a; i <= b; i += 0.1)
-				{
-					x.push_back(i);
-					y.push_back(wynikFunkcji(i, funkcja));
-				}
-				wykres->plot_xy(x, y, funkcja);
-
-				system("pause");
-
-				delete wykres;
-			}
-			catch (GnuplotException ge)
-			{
-				cout << ge.what() << endl;
-
-				system("pause");
-			}
+			rysuj_wykres(a, b, funkcja);
+			
 		}
 	} while (wyb != 0);
 }
+
+void rysuj_wykres(double a, double b, string &funkcja)
+{
+	Gnuplot::set_GNUPlotPath("E:/gnuplot/bin");
+
+	try
+	{
+		Gnuplot* wykres = new Gnuplot;
+		wykres->set_title("Wykres funkcji " + funkcja + " na przedziale <" + to_string(a) + ", " + to_string(b) + ">");
+		wykres->set_style("lines");
+		wykres->set_xlabel("X");
+		wykres->set_ylabel("Y");
+		wykres->set_grid();
+		//funkcja plot_equation nie pozwala na rysowanie cotangensa oraz funkcji napisanych w postaci 5^x, x^4 itp.
+		//dlatego jest tutaj ten if, jesli jest to inna funkcja niz wymienione to niech sobie sam rysuje
+		//w przypadku wystapienia takiej funkcji rysujemy recznie
+		if (funkcja.find('^') == string::npos && funkcja.find("ctg") == string::npos && funkcja.find("ctan") == string::npos)
+		{
+			wykres->set_xrange(a, b);
+			wykres->plot_equation(funkcja);
+		}
+		else
+		{
+			vector<double> x;
+			vector<double> y;
+			for (double i = a; i <= b; i += 0.1)
+			{
+				x.push_back(i);
+				y.push_back(wynikFunkcji(i, funkcja));
+			}
+			wykres->plot_xy(x, y, funkcja);
+		}
+		system("pause");
+
+		delete wykres;
+	}
+	catch (GnuplotException ge)
+	{
+		cout << ge.what() << endl;
+
+		system("pause");
+	}
+}
+
 /*
 double wielomian(float x)
 {
