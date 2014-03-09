@@ -75,8 +75,8 @@ double wynikFunkcji(double X, string funkcja)
 
 		double digit = stod(liczba);
 
-		if (abs(digit - round(digit)) < 0.0000009)
-			digit = round(digit);
+		/*if (abs(digit - round(digit)) < 0.0000009)
+			digit = round(digit);*/
 
 		wynik = sin(digit);
 
@@ -109,8 +109,8 @@ double wynikFunkcji(double X, string funkcja)
 
 		double digit = stod(liczba);
 
-		if (abs(digit - round(digit)) < 0.0000009)
-			digit = round(digit);
+		/*if (abs(digit - round(digit)) < 0.0000009)
+			digit = round(digit);*/
 
 		wynik = cos(digit);
 
@@ -143,9 +143,9 @@ double wynikFunkcji(double X, string funkcja)
 
 		double digit = stod(liczba);
 
-		if (abs(digit - round(digit)) < 0.0000009)
+		/*if (abs(digit - round(digit)) < 0.0000009)
 			digit = round(digit);
-
+*/
 		wynik = tan(digit);
 
 		strFunkcji.replace(beginOperation, endOperation - beginOperation, to_string(wynik));
@@ -189,13 +189,13 @@ double wynikFunkcji(double X, string funkcja)
 
 		double digit1 = stod(liczba1);
 
-		if (abs(digit1 - round(digit1)) < 0.0000009)
-			digit1 = round(digit1);
+		/*if (abs(digit1 - round(digit1)) < 0.0000009)
+			digit1 = round(digit1);*/
 
 		double digit2 = stod(liczba2);
 
-		if (abs(digit2 - round(digit2)) < 0.0000009)
-			digit2 = round(digit2);
+		/*if (abs(digit2 - round(digit2)) < 0.0000009)
+			digit2 = round(digit2);*/
 
 		wynik = pow(digit1, digit2);
 
@@ -240,13 +240,13 @@ double wynikFunkcji(double X, string funkcja)
 
 		double digit1 = stod(liczba1);
 
-		if (abs(digit1 - round(digit1)) < 0.0000009)
-			digit1 = round(digit1);
+		/*if (abs(digit1 - round(digit1)) < 0.0000009)
+			digit1 = round(digit1);*/
 
 		double digit2 = stod(liczba2);
 
-		if (abs(digit2 - round(digit2)) < 0.0000009)
-			digit2 = round(digit2);
+	/*	if (abs(digit2 - round(digit2)) < 0.0000009)
+			digit2 = round(digit2);*/
 
 		switch (strFunkcji[found])
 		{
@@ -299,13 +299,13 @@ double wynikFunkcji(double X, string funkcja)
 
 		double digit1 = stod(liczba1);
 
-		if (abs(digit1 - round(digit1)) < 0.0000009)
-			digit1 = round(digit1);
+		/*if (abs(digit1 - round(digit1)) < 0.0000009)
+			digit1 = round(digit1);*/
 
 		double digit2 = stod(liczba2);
 
-		if (abs(digit2 - round(digit2)) < 0.0000009)
-			digit2 = round(digit2);
+		/*if (abs(digit2 - round(digit2)) < 0.0000009)
+			digit2 = round(digit2);*/
 
 		switch (strFunkcji[found])
 		{

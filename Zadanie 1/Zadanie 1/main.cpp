@@ -34,7 +34,6 @@ int main()
 	system("cls");
 	cout << "Wybrana funkcja dla arg x = 3:" << endl << funkcje[wyb - 1](3) << endl << endl;
 	*/
-
 	menu(funk);
 	system("pause");
 	return 0;
@@ -52,9 +51,8 @@ double bisekcjia(double A, double B, float n, bool iteracje, string &funkcja)
 
 	if (wynikFunkcji((A + B) / 2, funkcja) == 0)
 	{
-		cout << "polowa przedzialu: " << wynikFunkcji((A + B) / 2, funkcja) << endl;
-
 		cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
+		cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
 		return (A + B) / 2;
 	}
 
