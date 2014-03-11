@@ -2,7 +2,7 @@
 
 using namespace std;
 
-double wynikFunkcji(double X, string funkcja)
+long double wynikFunkcji(long double X, string funkcja)
 {
 	string strFunkcji(funkcja);		//kopia lancucha funkcji
 
@@ -58,7 +58,7 @@ double wynikFunkcji(double X, string funkcja)
 	while (found != string::npos)
 	{
 		string liczba; //liczba po prawo
-		double wynik = 0;   //wynik operacji
+		long double wynik = 0;   //wynik operacji
 
 		int beginOperation = found; //poczatek operacji (pierwsza cyfra lewej liczby w stringu)
 		int endOperation;   //koniec operacji (ostatnia cyfra prawej liczby w stringu)
@@ -73,7 +73,7 @@ double wynikFunkcji(double X, string funkcja)
 		}
 		endOperation = found + i - 1;
 
-		double digit = stod(liczba);
+		long double digit = stold(liczba);
 
 		wynik = sin(digit);
 
@@ -89,7 +89,7 @@ double wynikFunkcji(double X, string funkcja)
 	while (found != string::npos)
 	{
 		string liczba; //liczba po prawo
-		double wynik = 0;   //wynik operacji
+		long double wynik = 0;   //wynik operacji
 
 		int beginOperation = found; //poczatek operacji (pierwsza cyfra lewej liczby w stringu)
 		int endOperation;   //koniec operacji (ostatnia cyfra prawej liczby w stringu)
@@ -104,7 +104,7 @@ double wynikFunkcji(double X, string funkcja)
 		}
 		endOperation = found + i - 1;
 
-		double digit = stod(liczba);
+		long double digit = stold(liczba);
 
 		wynik = cos(digit);
 
@@ -120,7 +120,7 @@ double wynikFunkcji(double X, string funkcja)
 	while (found != string::npos)
 	{
 		string liczba; //liczba po prawo
-		double wynik = 0;   //wynik operacji
+		long double wynik = 0;   //wynik operacji
 
 		int beginOperation = found; //poczatek operacji (pierwsza cyfra lewej liczby w stringu)
 		int endOperation;   //koniec operacji (ostatnia cyfra prawej liczby w stringu)
@@ -135,7 +135,7 @@ double wynikFunkcji(double X, string funkcja)
 		}
 		endOperation = found + i - 1;
 
-		double digit = stod(liczba);
+		long double digit = stold(liczba);
 
 		wynik = tan(digit);
 
@@ -152,7 +152,7 @@ double wynikFunkcji(double X, string funkcja)
 	{
 		string liczba1;	//liczba na lewo od znaku
 		string liczba2; //liczba na prawo od znaku
-		double wynik = 0;   //wynik operacji
+		long double wynik = 0;   //wynik operacji
 
 		int beginOperation; //poczatek operacji (pierwsza cyfra lewej liczby w stringu)
 		int endOperation;   //koniec operacji (ostatnia cyfra prawej liczby w stringu)
@@ -178,9 +178,9 @@ double wynikFunkcji(double X, string funkcja)
 		}
 		endOperation = found + i - 1;
 
-		double digit1 = stod(liczba1);
+		long double digit1 = stold(liczba1);
 
-		double digit2 = stod(liczba2);
+		long double digit2 = stold(liczba2);
 
 		wynik = pow(digit1, digit2);
 
@@ -197,7 +197,7 @@ double wynikFunkcji(double X, string funkcja)
 	{
 		string liczba1;	//liczba na lewo od znaku
 		string liczba2; //liczba na prawo od znaku
-		double wynik = 0;   //wynik operacji
+		long double wynik = 0;   //wynik operacji
 
 		int beginOperation; //poczatek operacji (pierwsza cyfra lewej liczby w stringu)
 		int endOperation;   //koniec operacji (ostatnia cyfra prawej liczby w stringu)
@@ -223,9 +223,9 @@ double wynikFunkcji(double X, string funkcja)
 		}
 		endOperation = found + i - 1;
 
-		double digit1 = stod(liczba1);
+		long double digit1 = stold(liczba1);
 
-		double digit2 = stod(liczba2);
+		long double digit2 = stold(liczba2);
 
 		switch (strFunkcji[found])
 		{
@@ -250,7 +250,7 @@ double wynikFunkcji(double X, string funkcja)
 	{
 		string liczba1;	//liczba na lewo od znaku
 		string liczba2; //liczba na prawo od znaku
-		double wynik = 0;   //wynik operacji
+		long double wynik = 0;   //wynik operacji
 
 		int beginOperation; //poczatek operacji (pierwsza cyfra lewej liczby w stringu)
 		int endOperation;   //koniec operacji (ostatnia cyfra prawej liczby w stringu)
@@ -276,9 +276,9 @@ double wynikFunkcji(double X, string funkcja)
 		}
 		endOperation = found + i - 1;
 
-		double digit1 = stod(liczba1);
+		long double digit1 = stold(liczba1);
 
-		double digit2 = stod(liczba2);
+		long double digit2 = stold(liczba2);
 
 		switch (strFunkcji[found])
 		{
@@ -295,7 +295,7 @@ double wynikFunkcji(double X, string funkcja)
 		found = strFunkcji.find_first_of("+-", 1);
 	}
 
-	double rounded = stod(strFunkcji);
+	long double rounded = stold(strFunkcji);
 	if (abs(rounded - round(rounded)) < 0.0000009)
 		rounded = round(rounded);
 

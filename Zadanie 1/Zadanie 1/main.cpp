@@ -158,26 +158,20 @@ void rysuj_wykres(double a, double b, string &funkcja)
 			wykres->plot_xy(x, y, funkcja);
 		}
 
-		if (pierw)
+		if (pierw || pierwS)
 		{
 			vector<double> x;
 			vector<double> y;
-			x.push_back(X);
-			y.push_back(Y);
-
-			wykres->set_style("points");
-			wykres->set_pointsize(2.0);
-
-			wykres->plot_xy(x, y, "Pierwiastek");
-		}
-
-		if (pierwS)
-		{
-			vector<double> x;
-			vector<double> y;
-			x.push_back(XS);
-			y.push_back(YS);
-
+			if (pierw)
+			{
+				x.push_back(X);
+				y.push_back(Y);
+			}
+			if (pierwS)
+			{
+				x.push_back(XS);
+				y.push_back(YS);
+			}
 			wykres->set_style("points");
 			wykres->set_pointsize(2.0);
 
