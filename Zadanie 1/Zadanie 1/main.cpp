@@ -6,37 +6,17 @@
 using namespace std;
 
 void menu(string &funkcja);
-/*double wielomian(float x);	//funkcja obliczajaca 2x^3 + 4x^2 - 7
-double trygonometria(float x); //funkcja obliczajaca sinx
-double wykladnicza(float x);	//funkcja obliczajaca 5^x
-double wielXtryg(float x);		//funkcja obliczajaca 2(sinx)^3 - 3x + 1
-double trygXwykl(float x);		//funkcja obliczajaca 5^x + 7x*4^x
-double wielXwykl(float x);		//funkcja obliczajaca sin (3^x)*/
-
 string funk;		//pelna funkcja
 bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
 void rysuj_wykres(double a, double b, string &funkcja);
 double X, Y; //pierwiastek
 bool pierw; //czy znaleziono
+bool pierwS;	//czy znaleziono pierwiastek w siecznych
+double XS, YS;	//pierwiastki
+bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana);
 
 int main()
 {
-	/*double (*funkcje[6])(float);	//Tablica wskaznikow na funkcje
-	funkcje[0] = wielomian;
-	funkcje[1] = trygonometria;
-	funkcje[2] = wykladnicza;
-	funkcje[3] = wielXtryg;
-	funkcje[4] = trygXwykl;
-	funkcje[5] = wielXwykl;
-	int wyb = menu();	//Wybieramy funkcje
-	if (wyb == 7)
-	{
-		system("pause");
-		exit(0);
-	}
-	system("cls");
-	cout << "Wybrana funkcja dla arg x = 3:" << endl << funkcje[wyb - 1](3) << endl << endl;
-	*/
 	menu(funk);
 	system("pause");
 	return 0;
@@ -63,10 +43,21 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 		return true;
 	}
 
+	if ((!iteracje) && (abs(wynikFunkcji((A + B) / 2, funkcja)) < n))
+	{
+		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
+		return false;
+	}
+
+	if (iteracje)
+	{
+		n -= 1;
+	}
+
 	if (wynikFunkcji(A, funkcja)*wynikFunkcji((A + B) / 2, funkcja) < 0)
-		bisekcja(A, (A + B) / 2, n - 1, true, funkcja);
+		bisekcja(A, (A + B) / 2, n, iteracje, funkcja);
 	if (wynikFunkcji(B, funkcja)*wynikFunkcji((A + B) / 2, funkcja) < 0)
-		bisekcja((A + B) / 2, B, n - 1, true, funkcja);
+		bisekcja((A + B) / 2, B, n, iteracje, funkcja);
 
 
 	return false;
@@ -74,70 +65,56 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 
 void menu(string &funkcja)
 {
-	int wyb;				//sposob obliczania miejsca zerowego
 	char zatrzymanie;		//warunek zatrzymania
 	float n;				//ilosc iteracji lub dokladnosc (zalezy od warunku zatrzymania)
 	double a, b;			//przedzialy
-	/*do
+	system("cls");
+
+	cout << "Wprowadz wzor funkcji:" << endl;
+	cin.clear();
+	cin.sync();
+	getline(cin, funkcja);
+	cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
+	cin >> a;
+	cout << endl << "B: ";
+	cin >> b;
+	while (wynikFunkcji(a, funkcja)*wynikFunkcji(b, funkcja) >= 0)
 	{
-		system("cls");
-		cout << "1) 2x^3 + 4x^2 - 7 \n"
-			<< "2) sinx \n"
-			<< "3) 5^x \n"
-			<< "4) 2(sinx)^3 - 3x + 1 \n"
-			<< "5) 5^x + 7x*4^x \n"
-			<< "6) sin (3^x) \n"
-			<< "7) Wyjscie \n"
-			<< "Wybierz funkcje: ";
-		cin >> wyb;
-	} while (wyb <1 || wyb >7);
-	return wyb;*/
-	do{
-		system("cls");
+		cout << endl << "Znaki przedzialu sa takie same!" << endl;
+		if (wynikFunkcji((a + b) / 2, funkcja) == 0)
+			cout << "ale srodek przedzialu jest miejscem zerowym!" << endl;
 
-		cout << "Wprowadz wzor funkcji:" << endl;
-		cin.clear();
-		cin.sync();
-		getline(cin, funkcja);
+		cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
+		cin >> a;
+		cout << endl << "B: ";
+		cin >> b;
+	}
+	cout << endl << "Podaj sposob zatrzymanai:" << endl << "a) Dokladnosc" << endl << "b) Zadana liczba iteracji" << endl;
+	cin >> zatrzymanie;
+	cout << endl << "Podaj wartosc warunku konczacego:" << endl;
+	cin >> n;
 
-		//zebranie informacji o metodzie liczenia miejsc zerowych
-		cout << endl << "Wybierz metode:" << endl << "0. Wyjscie" << endl << "1. Bisekcja" << endl;
-		cin >> wyb;
-		//Jesli wybor to wyjscie, to po co mamy wybierac dalej ? :D
-		if (wyb != 0)
-		{
-			cout << endl << "Podaj sposob zatrzymanai:" << endl << "b) Zadana liczba iteracji" << endl;
-			cin >> zatrzymanie;
-			cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
-			cin >> a;
-			cout << endl << "B: ";
-			cin >> b;
-			while (wynikFunkcji(a, funkcja)*wynikFunkcji(b, funkcja) >= 0)
-			{
-				cout << endl << "Znaki przedzialu sa takie same!" << endl;
-				if (wynikFunkcji((a + b) / 2, funkcja) == 0)
-					cout << "ale srodek przedzialu jest miejscem zerowym!" << endl;
+	switch (zatrzymanie)
+	{
+	case 'a':
+		pierw = bisekcja(a, b, n, false, funkcja);
+		pierwS = sieczne(a, b, n, false, funkcja, false);
+		break;
+	case 'b':
+		pierw = bisekcja(a, b, n, true, funkcja);
+		pierwS = sieczne(a, b, n, true, funkcja, false);
+		break;
+	}
+	if (pierw)
+	{
+		cout << "znaleziono pierwiastek w bisekcji" << endl;
+	}
+	if (pierwS)
+	{
+		cout << "znaleziono pierwiastek w siecznych" << endl;
+	}
 
-				cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
-				cin >> a;
-				cout << endl << "B: ";
-				cin >> b;
-			}
-
-			cout << endl << "Podaj wartosc warunku konczacego:" << endl;
-			cin >> n;
-
-			switch (zatrzymanie)
-			{
-			case 'b':
-				pierw = bisekcja(a, b, n, true, funkcja);
-				break;
-			}
-
-			rysuj_wykres(a, b, funkcja);
-			
-		}
-	} while (wyb != 0);
+	rysuj_wykres(a, b, funkcja);
 }
 
 void rysuj_wykres(double a, double b, string &funkcja)
@@ -181,15 +158,32 @@ void rysuj_wykres(double a, double b, string &funkcja)
 			wykres->plot_xy(x, y, funkcja);
 		}
 
-		vector<double> x;
-		vector<double> y;
-		x.push_back(X);
-		y.push_back(Y);
+		if (pierw)
+		{
+			vector<double> x;
+			vector<double> y;
+			x.push_back(X);
+			y.push_back(Y);
 
-		wykres->set_style("points");
-		wykres->set_pointsize(2.0);
+			wykres->set_style("points");
+			wykres->set_pointsize(2.0);
 
-		wykres->plot_xy(x, y, "Pierwiastek");
+			wykres->plot_xy(x, y, "Pierwiastek");
+		}
+
+		if (pierwS)
+		{
+			vector<double> x;
+			vector<double> y;
+			x.push_back(XS);
+			y.push_back(YS);
+
+			wykres->set_style("points");
+			wykres->set_pointsize(2.0);
+
+			wykres->plot_xy(x, y, "Pierwiastek");
+		}
+
 		system("pause");
 
 		delete wykres;
@@ -202,34 +196,44 @@ void rysuj_wykres(double a, double b, string &funkcja)
 	}
 }
 
-/*
-double wielomian(float x)
+bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana)
 {
-	return (2 * pow(x, 3) + 4 * pow(x, 2) - 7);
-}
+	if (iteracje && n == 0)
+	{
+		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
+		return false;
+	}
+	double x1 = A;
+	double x2 = B;
+	double y1 = wynikFunkcji(x1, funkcja);
+	double y2 = wynikFunkcji(x2, funkcja);
+	double a = (y1 - y2) / (x1 - x2);
+	double b = y1 - a*x1;
+	double x0 = -b / a;
+	if (wynikFunkcji(x0, funkcja) == 0)
+	{
+		cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
+		cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
 
-double trygonometria(float x)
-{
-	return sin(x);
-}
+		XS = (A + B) / 2;
+		YS = 0.0f;
 
-double wykladnicza(float x)
-{
-	return pow(5, x);
-}
+		return true;
+	}
 
-double wielXtryg(float x)
-{
-	return (2 * pow(sin(x), 3) - 3 * x + 1);
-}
+	if ((!iteracje) && (abs(wynikFunkcji((A + B) / 2, funkcja)) < n))
+	{
+		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
+		return false;
+	}
+	if (zmiana)
+	{
+		sieczne(A, x0, n, iteracje, funkcja, false);
+	}
+	else
+	{
+		sieczne(x0, B, n, iteracje, funkcja, true);
+	}
 
-double trygXwykl(float x)
-{
-	return (pow(5, x) + 7 * x*pow(4, x));
+	return false;
 }
-
-double wielXwykl(float x)
-{
-	return sin(pow(3, x));
-}
-*/
