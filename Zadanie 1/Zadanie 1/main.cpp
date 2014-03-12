@@ -32,7 +32,9 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 		return false;
 	}
 
-	if (wynikFunkcji((A + B) / 2, funkcja) == 0)
+	long double wynik = wynikFunkcji((A + B) / 2, funkcja);
+
+	if (wynik == 0)
 	{
 		cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
 		cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
@@ -43,7 +45,7 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 		return true;
 	}
 
-	if ((!iteracje) && (abs(wynikFunkcji((A + B) / 2, funkcja)) < n))
+	if ((!iteracje) && (abs(wynik) < n))
 	{
 		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
 		return false;
@@ -54,9 +56,9 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 		n -= 1;
 	}
 
-	if (wynikFunkcji(A, funkcja)*wynikFunkcji((A + B) / 2, funkcja) < 0)
+	if (wynikFunkcji(A, funkcja)*wynik < 0)
 		bisekcja(A, (A + B) / 2, n, iteracje, funkcja);
-	if (wynikFunkcji(B, funkcja)*wynikFunkcji((A + B) / 2, funkcja) < 0)
+	if (wynikFunkcji(B, funkcja)*wynik < 0)
 		bisekcja((A + B) / 2, B, n, iteracje, funkcja);
 
 
@@ -107,11 +109,19 @@ void menu(string &funkcja)
 	}
 	if (pierw)
 	{
-		cout << "znaleziono pierwiastek w bisekcji" << endl;
+		cout << "Znaleziono pierwiastek w bisekcji" << endl;
+	}
+	else
+	{
+		cout << "Nie znaleziono pierwiastka w bisekcji" << endl;
 	}
 	if (pierwS)
 	{
-		cout << "znaleziono pierwiastek w siecznych" << endl;
+		cout << "Znaleziono pierwiastek w siecznych" << endl;
+	}
+	else
+	{
+		cout << "Nie znaleziono pierwiastka w siecznych" << endl;
 	}
 
 	rysuj_wykres(a, b, funkcja);
@@ -138,25 +148,14 @@ void rysuj_wykres(double a, double b, string &funkcja)
 		wykres->set_xlabel("X");
 		wykres->set_ylabel("Y");
 		wykres->set_grid();
-		//funkcja plot_equation nie pozwala na rysowanie cotangensa oraz funkcji napisanych w postaci 5^x, x^4 itp.
-		//dlatego jest tutaj ten if, jesli jest to inna funkcja niz wymienione to niech sobie sam rysuje
-		//w przypadku wystapienia takiej funkcji rysujemy recznie
-		if (funkcja.find('^') == string::npos && funkcja.find("ctg") == string::npos && funkcja.find("ctan") == string::npos)
+		vector<double> x;
+		vector<double> y;
+		for (double i = a; i <= b; i += 0.1)
 		{
-			wykres->set_xrange(a, b);
-			wykres->plot_equation(funkcja);
+			x.push_back(i);
+			y.push_back(wynikFunkcji(i, funkcja));
 		}
-		else
-		{
-			vector<double> x;
-			vector<double> y;
-			for (double i = a; i <= b; i += 0.1)
-			{
-				x.push_back(i);
-				y.push_back(wynikFunkcji(i, funkcja));
-			}
-			wykres->plot_xy(x, y, funkcja);
-		}
+		wykres->plot_xy(x, y, funkcja);
 
 		if (pierw || pierwS)
 		{
@@ -215,7 +214,7 @@ bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool z
 		return true;
 	}
 
-	if ((!iteracje) && (abs(wynikFunkcji((A + B) / 2, funkcja)) < n))
+	if ((!iteracje) && (abs(wynikFunkcji(x0, funkcja)) < n))
 	{
 		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
 		return false;
