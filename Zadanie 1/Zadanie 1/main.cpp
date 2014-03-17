@@ -7,13 +7,14 @@ using namespace std;
 
 void menu(string &funkcja);
 string funk;		//pelna funkcja
-bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
+bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja, int &iteracja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
 void rysuj_wykres(double a, double b, string &funkcja);
 double X, Y; //pierwiastek
 bool pierw; //czy znaleziono
 bool pierwS;	//czy znaleziono pierwiastek w siecznych
 double XS, YS;	//pierwiastki
-bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana);
+bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana, int &iteracja);
+int iteracjaB = 0, iteracjaS = 0;
 
 int main()
 {
@@ -24,11 +25,12 @@ int main()
 
 
 
-bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
+bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja, int &iteracja)
 {
 	if (iteracje && n == 0)
 	{
 		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
+		iteracja++;
 		return false;
 	}
 
@@ -42,12 +44,14 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 		X = (A + B) / 2;
 		Y = 0.0f;
 
+		iteracja++;
 		return true;
 	}
 
 	if ((!iteracje) && (abs(wynik) < n))
 	{
 		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
+		iteracja++;
 		return false;
 	}
 
@@ -57,11 +61,18 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja)
 	}
 
 	if (wynikFunkcji(A, funkcja)*wynik < 0)
-		bisekcja(A, (A + B) / 2, n, iteracje, funkcja);
+	{
+		iteracja++;
+		return bisekcja(A, (A + B) / 2, n, iteracje, funkcja, iteracja);
+	}
 	if (wynikFunkcji(B, funkcja)*wynik < 0)
-		bisekcja((A + B) / 2, B, n, iteracje, funkcja);
+	{
+		iteracja++;
+		return bisekcja((A + B) / 2, B, n, iteracje, funkcja, iteracja);
+	}
 
 
+	iteracja++;
 	return false;
 }
 
@@ -99,12 +110,12 @@ void menu(string &funkcja)
 	switch (zatrzymanie)
 	{
 	case 'a':
-		pierw = bisekcja(a, b, n, false, funkcja);
-		pierwS = sieczne(a, b, n, false, funkcja, false);
+		pierw = bisekcja(a, b, n, false, funkcja, iteracjaB);
+		pierwS = sieczne(a, b, n, false, funkcja, false, iteracjaS);
 		break;
 	case 'b':
-		pierw = bisekcja(a, b, n, true, funkcja);
-		pierwS = sieczne(a, b, n, true, funkcja, false);
+		pierw = bisekcja(a, b, n, true, funkcja, iteracjaB);
+		pierwS = sieczne(a, b, n, true, funkcja, false, iteracjaS);
 		break;
 	}
 	if (pierw)
@@ -123,6 +134,8 @@ void menu(string &funkcja)
 	{
 		cout << "Nie znaleziono pierwiastka w siecznych" << endl;
 	}
+
+	cout << endl << "Iteracji przy bisekcji: " << iteracjaB << endl << "Iteracja przy siecznych: " << iteracjaS << endl;
 
 	rysuj_wykres(a, b, funkcja);
 }
@@ -189,11 +202,12 @@ void rysuj_wykres(double a, double b, string &funkcja)
 	}
 }
 
-bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana)
+bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana, int &iteracja)
 {
 	if (iteracje && n == 0)
 	{
 		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
+		iteracja++;
 		return false;
 	}
 	double x1 = A;
@@ -211,22 +225,26 @@ bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool z
 		XS = (A + B) / 2;
 		YS = 0.0f;
 
+		iteracja++;
 		return true;
 	}
 
 	if ((!iteracje) && (abs(wynikFunkcji(x0, funkcja)) < n))
 	{
 		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
+		iteracja++;
 		return false;
 	}
 	if (zmiana)
 	{
-		sieczne(A, x0, n, iteracje, funkcja, false);
+		iteracja++;
+		return sieczne(A, x0, n, iteracje, funkcja, false, iteracja);
 	}
 	else
 	{
-		sieczne(x0, B, n, iteracje, funkcja, true);
+		iteracja++;
+		return sieczne(x0, B, n, iteracje, funkcja, true, iteracja);
 	}
-
+	iteracja++;
 	return false;
 }
