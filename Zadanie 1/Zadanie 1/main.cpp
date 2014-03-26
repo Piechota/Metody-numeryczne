@@ -2,6 +2,7 @@
 #include <cmath>
 #include <string>
 #include "parser.h"
+#include <ctime>
 
 using namespace std;
 
@@ -15,6 +16,7 @@ bool pierwS;	//czy znaleziono pierwiastek w siecznych
 double XS, YS;	//pierwiastki
 bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana, int &iteracja);
 int iteracjaB = 0, iteracjaS = 0;
+int poteguj(int podstawa, int potega);
 
 int main()
 {
@@ -174,6 +176,8 @@ void rysuj_wykres(double a, double b, string &funkcja)
 		{
 			vector<double> x;
 			vector<double> y;
+			vector<double> xS;
+			vector<double> yS;
 			if (pierw)
 			{
 				x.push_back(X);
@@ -181,13 +185,14 @@ void rysuj_wykres(double a, double b, string &funkcja)
 			}
 			if (pierwS)
 			{
-				x.push_back(XS);
-				y.push_back(YS);
+				xS.push_back(XS);
+				yS.push_back(YS);
 			}
 			wykres->set_style("points");
 			wykres->set_pointsize(2.0);
+			wykres->plot_xy(x, y, "Pierwiastek metod¹ bisekcji");
 
-			wykres->plot_xy(x, y, "Pierwiastek");
+			wykres->plot_xy(xS, yS, "Pierwiastek metod¹ siecznych");
 		}
 
 		system("pause");
@@ -217,6 +222,22 @@ bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool z
 	double a = (y1 - y2) / (x1 - x2);
 	double b = y1 - a*x1;
 	double x0 = -b / a;
+	if (A < B)
+	{
+		if (x0<A || x0>B)
+		{
+			cout << "Wyszlo za przedzial" << endl;
+			return false;
+		}
+	}
+	else
+	{
+		if (x0>A || x0<B)
+		{
+			cout << "Wyszlo za przedzial" << endl;
+			return false;
+		}
+	}
 	if (wynikFunkcji(x0, funkcja) == 0)
 	{
 		cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;

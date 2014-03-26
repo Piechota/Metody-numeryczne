@@ -295,9 +295,21 @@ long double wynikFunkcji(long double X, string funkcja)
 		found = strFunkcji.find_first_of("+-", 1);
 	}
 
-	long double rounded = stold(strFunkcji);
+	long double rounded = stold(strFunkcji.substr(0,5));
 	if (abs(rounded - round(rounded)) < 0.0000009)
 		rounded = round(rounded);
 
 	return rounded;
+}
+
+//Funkcja potegujaca liczbe calkowita do liczby calkowitej
+
+double poteguj(double podstawa, int potega)
+{
+	double wynik = 1;
+	for (int i = 1; i <= potega; i++)
+	{
+		wynik *= podstawa;
+	}
+	return wynik;
 }
