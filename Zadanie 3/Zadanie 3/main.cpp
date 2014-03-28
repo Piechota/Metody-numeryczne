@@ -6,6 +6,7 @@
 
 #define ERROR "W powyzszym wypadku wylaczam program\n"
 #define MAT_2PI 2*3.14159
+#define MAT_PI 3.14159
 
 using namespace std;
 
@@ -29,11 +30,11 @@ double poteguj(double podstawa, int potega);
 double Horner(double wsp[], double x, int stopien);
 
 //Funkcja interpolujaca i rysujaca wykres oraz uzupelniajace wektory
-void interpoluj(double A, double B, double N);
+void interpoluj(double A, double B, int N);
 void rysuj_wykres(double A, double B);
 void uzupelnijWektorXY(double A, double B);
 void uzupelnijWektorInterpolowany(double A, double B);
-void uzupelnijWektorWezlow(double A, double B);
+void uzupelnijWektorWezlow(double A, double B, int N);
 
 int main()
 {
@@ -97,13 +98,11 @@ int main()
 	cin >> B;
 
 	cout << "Podaj liczbe wezlow interpolacji: " << endl;
-	double N;
+	int N;
 	cin >> N;
 	
 	interpoluj(A, B, N);
 	uzupelnijWektorXY(A, B);
-	uzupelnijWektorInterpolowany(A, B);
-	uzupelnijWektorWezlow(A, B);
 	rysuj_wykres(A, B);
 
 	return 0;
@@ -186,9 +185,11 @@ double Horner(double wsp[], double x, int stopien)
 	return wynik;
 }
 
-void interpoluj(double A, double B, double N)
+void interpoluj(double A, double B, int N)
 {
-	//TODO
+
+	uzupelnijWektorInterpolowany(A, B);
+	uzupelnijWektorWezlow(A, B, N - 1);
 }
 
 void rysuj_wykres(double A, double B)
@@ -251,9 +252,17 @@ void uzupelnijWektorInterpolowany(double A, double B)
 	}
 }
 
-void uzupelnijWektorWezlow(double A, double B)
+void uzupelnijWektorWezlow(double A, double B, int N)
 {
-	//TODO
-	xWezly.push_back(1);
-	yWezly.push_back(funkcja(1));
+	for (int n = 1; n <= N + 1; n++)
+	{
+		double arg = ((N + 1 + 0.5 - n) / (N + 1)) * MAT_PI;
+		double wynik =cos(arg);
+		wynik *= (B - A);
+		wynik += A + B;
+		wynik *= 0.5;
+		xWezly.push_back(wynik);
+		yWezly.push_back(funkcja(wynik));
+	}
+	cout << "Ilosc x w wezlach: " << xWezly.size() << endl;
 }
