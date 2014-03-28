@@ -20,7 +20,7 @@ vector<double> yWezly;
 void interpoluj(double A, double B, int N);
 void rysuj_wykres(double A, double B);
 void uzupelnijWektorXY(double A, double B);
-void uzupelnijWektorInterpolowany(double A, double B, int N);
+void uzupelnijWektorWielomianu(double A, double B, int N);
 void uzupelnijWektorWezlow(double A, double B, int N);
 
 int main()
@@ -97,8 +97,11 @@ int main()
 
 void interpoluj(double A, double B, int N)
 {
-	uzupelnijWektorInterpolowany(A, B, N);
 	uzupelnijWektorWezlow(A, B, N - 1);
+	//TODO
+	//wyliczyc wspolczynniki b_i
+	//znalezc sposob na obliczenie wartosci wielomianu interpolowanego
+	uzupelnijWektorWielomianu(A, B, N);
 }
 
 void rysuj_wykres(double A, double B)
@@ -152,13 +155,9 @@ void uzupelnijWektorXY(double A, double B)
 	}
 }
 
-void uzupelnijWektorInterpolowany(double A, double B, int N)
+void uzupelnijWektorWielomianu(double A, double B, int N)
 {
-	for (double i = A; i <= B; i += 0.1)
-	{
-		xInterpolowane.push_back(i);
-		yInterpolowane.push_back(funkcja(i));
-	}
+	//TODO
 }
 
 void uzupelnijWektorWezlow(double A, double B, int N)
@@ -183,5 +182,4 @@ void uzupelnijWektorWezlow(double A, double B, int N)
 		xWezly.push_back(wynik);
 		yWezly.push_back(funkcja(wynik));
 	}
-	cout << "Ilosc x w wezlach: " << xWezly.size() << endl;
 }
