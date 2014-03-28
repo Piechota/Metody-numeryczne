@@ -1,7 +1,4 @@
-#include <iostream>
-#include <string>
-#include <cmath>
-#include <vector>
+#include "funkcje.h"
 #include "gnuplot_i.hpp"
 
 #define ERROR "W powyzszym wypadku wylaczam program\n"
@@ -19,21 +16,11 @@ vector<double> yInterpolowane;
 vector<double> xWezly;
 vector<double> yWezly;
 
-//Funkcje matematyczne, obliczeniowe
-double liniowa(double x);
-double modul(double x);
-double wielomian(double x);
-double sinus(double x);
-double liniowaSinus(double x);
-double modulSinusWykladnicza(double x);
-double poteguj(double podstawa, int potega);
-double Horner(double wsp[], double x, int stopien);
-
 //Funkcja interpolujaca i rysujaca wykres oraz uzupelniajace wektory
 void interpoluj(double A, double B, int N);
 void rysuj_wykres(double A, double B);
 void uzupelnijWektorXY(double A, double B);
-void uzupelnijWektorInterpolowany(double A, double B);
+void uzupelnijWektorInterpolowany(double A, double B, int N);
 void uzupelnijWektorWezlow(double A, double B, int N);
 
 int main()
@@ -108,87 +95,9 @@ int main()
 	return 0;
 }
 
-double liniowa(double x)
-{
-	double wynik;
-	wynik = 2 * x - 4;
-	return wynik;
-}
-
-double modul(double x)
-{
-	double wynik = x;
-	if (wynik < 0)
-	{
-		wynik = -wynik;
-	}
-	return wynik;
-}
-
-double wielomian(double x)
-{
-	double wynik;
-	double wsp[4] = { 5, 3, -7, 3 };
-	wynik = Horner(wsp, x, 3);
-	return wynik;
-}
-
-double sinus(double x)
-{
-	double wynik = sin(x);
-	return wynik;
-}
-
-double liniowaSinus(double x)
-{
-	double wynik = 2 * sin(x);
-	wynik -= 5;
-	return wynik;
-}
-
-double modulSinusWykladnicza(double x)
-{
-	double wynik = 2 * abs(x);
-	wynik -= 3 * sin(x);
-	wynik -= poteguj(x, 2);
-	return wynik;
-}
-
-double poteguj(double podstawa, int potega)
-{
-	double wynik = 1.0;
-	for (int i = 1; i <= potega; i++)
-	{
-		wynik *= podstawa;
-	}
-	return wynik;
-}
-
-double Horner(double wsp[], double x, int stopien)
-{
-	/*
-	//Schemat Hornera rekurencyjnie
-	if (stopien == 0)
-	{
-		return wsp[0];
-	}
-	
-	return x*Horner(wsp, x, stopien - 1) + wsp[stopien];*/
-
-	//Schemat Horenera iteracyjnie
-	double wynik = wsp[0];
-	for (int i = 1; i <= stopien; i++)
-	{
-		wynik *= x;
-		wynik += wsp[i];
-	}
-	return wynik;
-}
-
 void interpoluj(double A, double B, int N)
 {
-
-	uzupelnijWektorInterpolowany(A, B);
+	uzupelnijWektorInterpolowany(A, B, N);
 	uzupelnijWektorWezlow(A, B, N - 1);
 }
 
@@ -243,7 +152,7 @@ void uzupelnijWektorXY(double A, double B)
 	}
 }
 
-void uzupelnijWektorInterpolowany(double A, double B)
+void uzupelnijWektorInterpolowany(double A, double B, int N)
 {
 	for (double i = A; i <= B; i += 0.1)
 	{
@@ -256,6 +165,16 @@ void uzupelnijWektorWezlow(double A, double B, int N)
 {
 	for (int n = 1; n <= N + 1; n++)
 	{
+		/*WYKLADOWY WZOR 1/2((B-A)cos((2n+1)*PI/(2N+1))+A+B)
+		//Pokazuje tylko pare wezlow
+		double arg = (2 * n + 1) / (2 * N + 1);
+		arg *= MAT_PI;
+		double wynik = cos(arg);
+		wynik *= (B - A);
+		wynik += (A + B);
+		wynik *= 0.5;*/
+
+		//WZOR ZNALEZIONY NA http://www3.nd.edu/~jjwteach/441/PdfNotes/lecture8.pdf
 		double arg = ((N + 1 + 0.5 - n) / (N + 1)) * MAT_PI;
 		double wynik =cos(arg);
 		wynik *= (B - A);
