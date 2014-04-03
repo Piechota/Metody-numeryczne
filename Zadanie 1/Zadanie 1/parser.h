@@ -44,7 +44,7 @@ long double wynikFunkcji(long double X, string funkcja);
 digit readLeft(int found, string strFunkcji, int &beginOperation);
 digit readRight(int found, string strFunkcji, int &endOperation);
 
-void ParsX(string &Funkcja, double X)
+void ParsX(string &Funkcja, double X)//Podmienia x
 {
 	size_t found = Funkcja.find('x');
 	while (found != string::npos)
@@ -54,7 +54,7 @@ void ParsX(string &Funkcja, double X)
 	}
 }
 
-void ParsComma(string &Funkcja)
+void ParsComma(string &Funkcja)//Zamienia przecinki na kropki
 {
 	size_t found = Funkcja.find(',');
 	while (found != string::npos)
@@ -64,7 +64,7 @@ void ParsComma(string &Funkcja)
 	}
 }
 
-void ParsSpace(string &Funkcja)
+void ParsSpace(string &Funkcja)//Usuwa spacje
 {
 	size_t found = Funkcja.find(' ');
 	while (found != string::npos)
@@ -74,7 +74,7 @@ void ParsSpace(string &Funkcja)
 	}
 }
 
-void ParsBracket(string &Funkcja, double X)
+void ParsBracket(string &Funkcja, double X)//Szuka nawiasow
 {
 	int otwNawias;
 	int zamNawias;
@@ -98,7 +98,7 @@ void ParsBracket(string &Funkcja, double X)
 	}
 }
 
-void ParsSin(string &Funkcja, double X)
+void ParsSin(string &Funkcja, double X)//Oblicza sin'usa
 {
 	//znalezienie wszystkich dzialan sinus oraz ich obliczenie
 	size_t found = Funkcja.find("sin");
@@ -125,7 +125,7 @@ void ParsSin(string &Funkcja, double X)
 	}
 }
 
-void ParsCos(string &Funkcja, double X)
+void ParsCos(string &Funkcja, double X)//Oblicza cos'usa
 {
 	//znalezienie wszystkich dzialan cosinus oraz ich obliczenie
 	size_t found = Funkcja.find("cos");
@@ -152,7 +152,7 @@ void ParsCos(string &Funkcja, double X)
 	}
 }
 
-void ParsTan(string &Funkcja, double X)
+void ParsTan(string &Funkcja, double X)//Oblicza tan'usa
 {
 	//znalezienie wszystkich dzialan tanges oraz ich obliczenie
 	size_t found = Funkcja.find("tan");
@@ -179,7 +179,7 @@ void ParsTan(string &Funkcja, double X)
 	}
 }
 
-void ParsPower(string &Funkcja, double X)
+void ParsPower(string &Funkcja, double X)//Oblicza potege
 {
 	//znalezienie wszystkich dzialan ^ oraz ich obliczenie
 	size_t found = Funkcja.find_first_of("^", 1);
@@ -207,7 +207,7 @@ void ParsPower(string &Funkcja, double X)
 	}
 }
 
-void ParsMD(string &Funkcja, double X)
+void ParsMD(string &Funkcja, double X)//Oblicza mnozenie i dzielenie
 {
 	//znalezienie wszystkich dzialan * i / oraz ich obliczenie
 	size_t found = Funkcja.find_first_of("*/", 1);
@@ -243,7 +243,7 @@ void ParsMD(string &Funkcja, double X)
 	}
 }
 
-void ParsAS(string &Funkcja, double X)
+void ParsAS(string &Funkcja, double X)//Oblicza dodawanie i odejmowanie
 {
 	//znalezienie wszystkich dzialan + i - oraz ich obliczenie
 	size_t found = Funkcja.find_first_of("+-", 1);
@@ -311,82 +311,114 @@ bool isHornerPoly(string Funkcja)
 
 vector<double> hornerPoly(string Funkcja)
 {
-	int trash;
-
 	vector<double> tmp;
-	int maxPotega = 0;
-	size_t found = Funkcja.find('x'); 
-	if (found != string::npos)		//jesli znaleziono 'x'
-		maxPotega = 1;				//istnieje potega 1 stopnia
 
-	found = Funkcja.find("x^");
-	while (found != string::npos)	//szukanie najwyzszej potegi
-	{
-		maxPotega = (maxPotega < readRight(found + 2, Funkcja, trash).Integer) ? readRight(found + 2, Funkcja, trash).Integer : maxPotega; 
-		found = Funkcja.find("x^", trash);
-	}
+	int maxPower = 0;
+	size_t tmp_found = 0;
 
-	tmp.assign(maxPotega + 1, 0);	//utworzenie ilosci elementow rownych ilosci poteg, wypelnienie ich zerami
-
-	for (int i = maxPotega; i > 0; i--)	//petla liczaca wspolczynniki przy potegach
-	{
-		string power;
-		digit liczba;
-
-		int trash_begin = 0;	//przechowuje poczatek lewego wspolczynnika
-		int trash_end = 0;		//przechowuje koniec prawego wspolczynnika
-
-		power = to_string(i);
-		size_t tmp_found = Funkcja.find("x^" + power);	//szukanie aktualnej potegi
-		
-		if (tmp_found == string::npos && i == 1)	//jesli potegi nie ma, sprawdzenie czy nie jest rowna 1 (x^1 = x)
-			tmp_found = Funkcja.find('x');
-
-		while (tmp_found != string::npos)
-		{
-			digit tmp_liczba(1);
-			trash_begin = tmp_found;
-
-			if ((tmp_found != 0) && (Funkcja[tmp_found - 1] == '*'))	//obliczenie wspolczynnika po lewej stronie (jesli istnieje)
-			{
-				tmp_liczba *= readLeft(tmp_found - 2, Funkcja, trash_begin);	//odczytanie lewego wspolczynnika
-				if (Funkcja[tmp_found - trash_begin - 1] == '-')	//jesli znak jest ujemny
-					tmp_liczba.isInteger ? (tmp_liczba.Integer *= -1) : (tmp_liczba.Double *= -1);
-			}
-
-			if ((trash_begin != 0) && !isdigit(Funkcja[trash_begin - 1]))
-				trash_begin--;
-
-			liczba = readRight((Funkcja[tmp_found+1] == '^') ? (tmp_found + 2) : (tmp_found+1), Funkcja, trash_end);//odczytanie wspolczynnika z prawej strony
-			if (trash_end + 1 != Funkcja.length() && Funkcja[trash_end + 1] == '*')
-			{
-				tmp_liczba *= readRight(trash_end + 2, Funkcja, trash_end);
-			}
-
-			tmp_found = Funkcja.find("x^" + power, tmp_found+2);	//szukanie aktualnej potegi
-
-			if (tmp_found == string::npos && i == 1)	//jesli potegi nie ma, sprawdzenie czy nie jest rowna 1 (x^1 = x)
-				tmp_found = Funkcja.find('x', tmp_found+1);
-
-			if (tmp_liczba.isInteger && tmp_liczba.Integer == 1 && Funkcja[trash_begin] == '-')
-				tmp_liczba.Integer *= -1;
-
-			tmp[i] += (tmp_liczba.isInteger ? tmp_liczba.Integer : tmp_liczba.Double);
-		}
-
-		if (trash_begin != trash_end)
-			Funkcja.erase(trash_begin, trash_end - trash_begin + 1);
-		tmp_found = Funkcja.find("x^" + power);
-	}
-
-	if (!Funkcja.empty()) //jesli nie pusta, jej wynik to wartosc wspolczynnika dla x^0 
+	////////////				SZUKANIE NAJWIEKSZEJ POTEGI
+	tmp_found = Funkcja.find('x');
+	if (tmp_found == string::npos)
 	{
 		ParsMD(Funkcja, 1);
 		ParsAS(Funkcja, 1);
-
-		tmp[0] += stod(Funkcja);
+		tmp.push_back(stod(Funkcja));
+		return tmp;
 	}
+
+	maxPower = 1;
+
+	tmp_found = Funkcja.find("x^");
+	while (tmp_found != string::npos)
+	{
+		int trash;
+		digit liczba = readRight(tmp_found + 2, Funkcja, trash);
+
+		if (liczba.Integer > maxPower)
+			maxPower = liczba.Integer;
+
+		tmp_found = Funkcja.find("x^", tmp_found + 2);
+	}
+
+	tmp.assign(maxPower + 1, 0);
+	////////////////////////////////////////////////////////////
+	///////			Liczenie wspolczynnikow dla potegi > 0
 	
+	for (int i = maxPower; i > 0; i--)
+	{
+		string power = to_string(i);
+		tmp_found = Funkcja.find("x^" + power);
+		while (tmp_found != string::npos)
+		{
+			int tmp_begin = tmp_found;
+			int tmp_end = tmp_found;
+			digit liczba(1);
+
+			//Szukanie z lewej
+			if (tmp_found > 0 && Funkcja[tmp_found - 1] == '*')
+				liczba *= readLeft(tmp_found - 2, Funkcja, tmp_begin);
+			
+			//Szukanie z prawej
+			if (tmp_found < Funkcja.length() - 1)
+			{
+				readRight(tmp_found + 2, Funkcja, tmp_end);
+				if (tmp_end < Funkcja.length() - 1 && Funkcja[tmp_end + 1] == '*')
+					liczba *= readRight(tmp_end + 2, Funkcja, tmp_end);
+			}
+
+			if (tmp_begin > 0)
+				tmp_begin--;
+			if (tmp_found > 0 && Funkcja[tmp_found - 1] == '-')
+				liczba.Integer *= -1;
+
+			tmp[i] += liczba.Integer;
+
+			Funkcja.erase(tmp_begin, tmp_end+1);
+
+			tmp_found = Funkcja.find("x^" + power);
+		}
+	}
+
+	//	Sprawdzane dla potegi = 1
+	tmp_found = Funkcja.find('x');
+	while (tmp_found != string::npos)
+	{
+		int tmp_begin = tmp_found;
+		int tmp_end = tmp_found;
+		digit liczba(1);
+
+		//Szukanie z lewej
+		if (tmp_found > 0 && Funkcja[tmp_found - 1] == '*')
+			liczba *= readLeft(tmp_found - 1, Funkcja, tmp_begin);
+
+		//Szukanie z prawej
+		if (tmp_found < Funkcja.length() - 1)
+		{
+			if (Funkcja[tmp_found + 1] == '*')
+				liczba *= readRight(tmp_found + 2, Funkcja, tmp_end);
+		}
+
+		if (tmp_begin > 0)
+			tmp_begin--;
+		if (Funkcja[tmp_found - 1] == '-')
+			liczba.Integer *= -1;
+
+		tmp[1] += liczba.Integer;
+
+		Funkcja.erase(tmp_begin, tmp_end + 1);
+
+		tmp_found = Funkcja.find('x');
+	}
+
+	//	Dla potegi = 0
+	if (!Funkcja.empty())
+	{
+		ParsMD(Funkcja, 1);
+		ParsAS(Funkcja, 1);
+		tmp[0] = stod(Funkcja);
+	}
+	///////////////////////////////////////////////////////////
+
 	return tmp;
 }
 

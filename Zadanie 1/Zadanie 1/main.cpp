@@ -1,7 +1,7 @@
 #include "gnuplot_i.hpp"
 #include <cmath>
 #include <string>
-//#include "parser.h"
+#include "parser.h"
 #include <ctime>
 
 using namespace std;
@@ -17,7 +17,7 @@ double XS, YS;	//pierwiastki
 bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana, int &iteracja);
 int iteracjaB = 0, iteracjaS = 0;
 int poteguj(int podstawa, int potega);
-long double wynikFunkcji(double x, string f)
+/*long double wynikFunkcji(double x, string f)
 {
 	//Funkcja tymczasowa, parser sie zepsul
 	long double wynik = x*x*x;
@@ -25,7 +25,7 @@ long double wynikFunkcji(double x, string f)
 	wynik -= 3 * x;
 	wynik += 7;
 	return wynik;
-}
+}*/
 
 int main()
 {
