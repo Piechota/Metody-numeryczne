@@ -53,6 +53,7 @@ void ParsX(string &Funkcja, double X)
 		found = Funkcja.find('x');
 	}
 }
+
 void ParsComma(string &Funkcja)
 {
 	size_t found = Funkcja.find(',');
@@ -62,6 +63,7 @@ void ParsComma(string &Funkcja)
 		found = Funkcja.find(',');
 	}
 }
+
 void ParsSpace(string &Funkcja)
 {
 	size_t found = Funkcja.find(' ');
@@ -71,6 +73,7 @@ void ParsSpace(string &Funkcja)
 		found = Funkcja.find(' ');
 	}
 }
+
 void ParsBracket(string &Funkcja, double X)
 {
 	int otwNawias;
@@ -94,6 +97,7 @@ void ParsBracket(string &Funkcja, double X)
 		found = Funkcja.find_last_of('(');
 	}
 }
+
 void ParsSin(string &Funkcja, double X)
 {
 	//znalezienie wszystkich dzialan sinus oraz ich obliczenie
@@ -120,6 +124,7 @@ void ParsSin(string &Funkcja, double X)
 		found = Funkcja.find("sin");
 	}
 }
+
 void ParsCos(string &Funkcja, double X)
 {
 	//znalezienie wszystkich dzialan cosinus oraz ich obliczenie
@@ -146,6 +151,7 @@ void ParsCos(string &Funkcja, double X)
 		found = Funkcja.find("cos");
 	}
 }
+
 void ParsTan(string &Funkcja, double X)
 {
 	//znalezienie wszystkich dzialan tanges oraz ich obliczenie
@@ -172,6 +178,7 @@ void ParsTan(string &Funkcja, double X)
 		found = Funkcja.find("tan");
 	}
 }
+
 void ParsPower(string &Funkcja, double X)
 {
 	//znalezienie wszystkich dzialan ^ oraz ich obliczenie
@@ -199,6 +206,7 @@ void ParsPower(string &Funkcja, double X)
 		found = Funkcja.find_first_of("^", 1);
 	}
 }
+
 void ParsMD(string &Funkcja, double X)
 {
 	//znalezienie wszystkich dzialan * i / oraz ich obliczenie
@@ -234,6 +242,7 @@ void ParsMD(string &Funkcja, double X)
 		found = Funkcja.find_first_of("*/", 1);
 	}
 }
+
 void ParsAS(string &Funkcja, double X)
 {
 	//znalezienie wszystkich dzialan + i - oraz ich obliczenie
@@ -278,6 +287,7 @@ double horner(vector<double> wsp, double x)
 
 	return wynik;
 }
+
 bool isHornerPoly(string Funkcja)
 {
 	bool returned = true;
@@ -298,6 +308,7 @@ bool isHornerPoly(string Funkcja)
 
 	return returned;
 }
+
 vector<double> hornerPoly(string Funkcja)
 {
 	int trash;
@@ -403,6 +414,7 @@ digit readLeft(int found, string strFunkcji, int &beginOperation)
 
 	return tmp;
 }
+
 digit readRight(int found, string strFunkcji, int &endOperation)
 {
 	string liczba;
@@ -457,4 +469,3 @@ long double wynikFunkcji(long double X, string funkcja)
 
 	return rounded;
 }
-

@@ -1,7 +1,7 @@
 #include "gnuplot_i.hpp"
 #include <cmath>
 #include <string>
-#include "parser.h"
+//#include "parser.h"
 #include <ctime>
 
 using namespace std;
@@ -17,6 +17,15 @@ double XS, YS;	//pierwiastki
 bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana, int &iteracja);
 int iteracjaB = 0, iteracjaS = 0;
 int poteguj(int podstawa, int potega);
+long double wynikFunkcji(double x, string f)
+{
+	//Funkcja tymczasowa, parser sie zepsul
+	long double wynik = x*x*x;
+	wynik -= x*x;
+	wynik -= 3 * x;
+	wynik += 7;
+	return wynik;
+}
 
 int main()
 {
@@ -29,114 +38,35 @@ int main()
 
 bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja, int &iteracja)
 {
-	//Przerobiona bisekcja na iteracyjne
-	/*if (iteracje && n == 0)
-	{
-		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
-		iteracja++;
-		return false;
-	}
-
-	long double wynik = wynikFunkcji((A + B) / 2, funkcja);
-
-	if (wynik == 0)
-	{
-		cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
-		cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
-
-		X = (A + B) / 2;
-		Y = 0.0f;
-
-		iteracja++;
-		return true;
-	}
-
-	if ((!iteracje) && (abs(wynik) < n))
-	{
-		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
-		iteracja++;
-		return false;
-	}
-
-	if (iteracje)
-	{
-		n -= 1;
-	}
-
-	if (wynikFunkcji(A, funkcja)*wynik < 0)
+	long double wynik = 1;
+	while (!((iteracje && n == 0) || (!iteracje && abs(wynik) < n)))
 	{
 		iteracja++;
-		return bisekcja(A, (A + B) / 2, n, iteracje, funkcja, iteracja);
-	}
-	if (wynikFunkcji(B, funkcja)*wynik < 0)
-	{
-		iteracja++;
-		return bisekcja((A + B) / 2, B, n, iteracje, funkcja, iteracja);
-	}
-
-
-	iteracja++;
-	return false;*/
-	if (iteracje)
-	{
-		for (int i = 0; i < n; i++)
+		long double wynik = wynikFunkcji((A + B) / 2, funkcja);
+		if (wynik == 0 || (!iteracje && abs(wynik) < n))
 		{
-			iteracja++;
-			long double wynik = wynikFunkcji((A + B) / 2, funkcja);
-			if (wynik == 0)
-			{
-				cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
-				cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
+			cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
+			cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
 
-				X = (A + B) / 2;
-				Y = 0.0f;
+			X = (A + B) / 2;
+			Y = 0.0f;
 
-				return true;
-			}
-			if (wynikFunkcji(A, funkcja)*wynik < 0)
-			{
-				B = (A + B) / 2;
-			}
-			if (wynikFunkcji(B, funkcja)*wynik < 0)
-			{
-				A = (A + B) / 2;
-			}
+			return true;
 		}
-		cout << "Koniec iteracji na przedziale [" << A << ", " << B << "]" << endl;
-		return false;
-	}
-	else
-	{
-		for (int i = 0; /* brak warunku konczacego */ ; i++)
+		if (wynikFunkcji(A, funkcja)*wynik < 0)
 		{
-			iteracja++;
-			long double wynik = wynikFunkcji((A + B) / 2, funkcja);
-			if (wynik == 0)
-			{
-				cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
-				cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
-
-				X = (A + B) / 2;
-				Y = 0.0f;
-
-				return true;
-			}
-			else if (abs(wynik) < n)
-			{
-				cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
-				cout << "f(" << (A + B) / 2 << ") = 0 +- ((9e-7)+" << n << ")" << endl;
-				return true;
-			}
-			if (wynikFunkcji(A, funkcja)*wynik < 0)
-			{
-				B = (A + B) / 2;
-			}
-			if (wynikFunkcji(B, funkcja)*wynik < 0)
-			{
-				A = (A + B) / 2;
-			}
+			B = (A + B) / 2;
+		}
+		if (wynikFunkcji(B, funkcja)*wynik < 0)
+		{
+			A = (A + B) / 2;
+		}
+		if (iteracje)
+		{
+			n--;
 		}
 	}
+	return false;
 }
 
 void menu(string &funkcja)
@@ -270,174 +200,40 @@ void rysuj_wykres(double a, double b, string &funkcja)
 
 bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana, int &iteracja)
 {
-	//Zmiana z rekurencji na iteracje
-	/*if (iteracje && n == 0)
+	long double wynik = 1;
+	while (!((iteracje && n == 0) || (!iteracje && abs(wynik) < n)))
 	{
-		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
 		iteracja++;
-		return false;
-	}
-	double x1 = A;
-	double x2 = B;
-	double y1 = wynikFunkcji(x1, funkcja);
-	double y2 = wynikFunkcji(x2, funkcja);
-	double a = (y1 - y2) / (x1 - x2);
-	double b = y1 - a*x1;
-	double x0 = -b / a;
-	if (A < B)
-	{
-		if (x0<A || x0>B)
+		double y1 = wynikFunkcji(A, funkcja);
+		double y2 = wynikFunkcji(B, funkcja);
+		double a = (y1 - y2) / (A - B);
+		double b = y1 - a*A;
+		double x0 = -b / a;
+		long double wynik = wynikFunkcji(x0, funkcja);
+		if (wynik == 0 || (!iteracje && abs(wynik) < n ))
 		{
-			cout << "Wyszlo za przedzial" << endl;
-			return false;
+			cout << endl << "Pierwiastek znaleziony w punkcie: " << x0 << endl;
+			cout << "f(" << x0 << ") = 0 +- (9e-7)" << endl;
+
+			XS = x0;
+			YS = 0.0f;
+
+			return true;
 		}
-	}
-	else
-	{
-		if (x0>A || x0<B)
+
+		if (zmiana)
 		{
-			cout << "Wyszlo za przedzial" << endl;
-			return false;
+			B = x0;
 		}
-	}
-	if (wynikFunkcji(x0, funkcja) == 0)
-	{
-		cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
-		cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
-
-		XS = (A + B) / 2;
-		YS = 0.0f;
-
-		iteracja++;
-		return true;
-	}
-
-	if ((!iteracje) && (abs(wynikFunkcji(x0, funkcja)) < n))
-	{
-		cout << endl << "Koniec iteracji na przedziale: [" << A << ", " << B << "]" << endl;
-		iteracja++;
-		return false;
-	}
-	if (zmiana)
-	{
-		iteracja++;
-		return sieczne(A, x0, n, iteracje, funkcja, false, iteracja);
-	}
-	else
-	{
-		iteracja++;
-		return sieczne(x0, B, n, iteracje, funkcja, true, iteracja);
-	}
-	iteracja++;
-	return false;*/
-	if (iteracje)
-	{
-		for (int i = 0; i < n; i++)
+		else
 		{
-			iteracja++;
-			double x1 = A;
-			double x2 = B;
-			double y1 = wynikFunkcji(x1, funkcja);
-			double y2 = wynikFunkcji(x2, funkcja);
-			double a = (y1 - y2) / (x1 - x2);
-			double b = y1 - a*x1;
-			double x0 = -b / a;
-			long double wynik = wynikFunkcji(x0, funkcja);
-			if (A < B)
-			{
-				if (!(x0>A&&x0<B))
-				{
-					cout << "Wyszlo za przedzial" << endl;
-					return false;
-				}
-			}
-			else
-			{
-				if (!(x0>B&&x0<A))
-				{
-					cout << "Wyszlo za przedzial" << endl;
-					return false;
-				}
-			}
-			if (wynik == 0)
-			{
-				cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
-				cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
-
-				XS = (A + B) / 2;
-				YS = 0.0f;
-
-				return true;
-			}
-			if (zmiana)
-			{
-				B = x0;
-			}
-			else
-			{
-				A = x0;
-			}
-			zmiana = !zmiana;
+			A = x0;
 		}
-	}
-	else
-	{
-		for (int i = 0; /* brak warunku konczacego */ ; i++)
+		zmiana = !zmiana;
+
+		if (iteracje)
 		{
-			iteracja++;
-			double x1 = A;
-			double x2 = B;
-			double y1 = wynikFunkcji(x1, funkcja);
-			double y2 = wynikFunkcji(x2, funkcja);
-			double a = (y1 - y2) / (x1 - x2);
-			double b = y1 - a*x1;
-			double x0 = -b / a;
-			long double wynik = wynikFunkcji(x0, funkcja);
-			if (A < B)
-			{
-				if (!(x0>A&&x0<B))
-				{
-					cout << "Wyszlo za przedzial" << endl;
-					return false;
-				}
-			}
-			else
-			{
-				if (!(x0>B&&x0<A))
-				{
-					cout << "Wyszlo za przedzial" << endl;
-					return false;
-				}
-			}
-			if (wynik == 0)
-			{
-				cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
-				cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
-
-				XS = (A + B) / 2;
-				YS = 0.0f;
-
-				return true;
-			}
-			else if (abs(wynik) < n)
-			{
-				cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
-				cout << "f(" << (A + B) / 2 << ") = 0 +- ((9e-7) + " << n << ")" << endl;
-
-				XS = (A + B) / 2;
-				YS = 0.0f;
-
-				return true;
-			}
-			if (zmiana)
-			{
-				B = x0;
-			}
-			else
-			{
-				A = x0;
-			}
-			zmiana = !zmiana;
+			n--;
 		}
 	}
 	return false;
