@@ -15,7 +15,28 @@ vector< vector<double> >	matrixA;
 vector<double>				matrixB;
 vector<double>				matrixX;
 
-bool readMatrix(vector< vector<double> > &a_matrix, vector<double> &b_matrix, vector<double> &x_matrix)
+double det(vector< vector<double> >	matrix)
+{
+	if (matrix.size() != matrix[0].size())
+		return 0;
+
+	if (matrix.size() == 1)
+		return matrix[0][0];
+
+	vector< vector<double> > tmp_matrix = matrix;
+	double wynik = 0;
+
+	for (int i = 0; i < matrix[0].size(); i++)
+	{
+		tmp_matrix.erase(tmp_matrix.begin());
+		for (int j = 0; j < tmp_matrix.size(); j++)
+			tmp_matrix[j].erase(tmp_matrix[j].begin() + i);
+		wynik += ((i % 2) ? (-(matrix[0][i])) : (matrix[0][i])) * det(tmp_matrix);
+		tmp_matrix = matrix;
+	}
+	return wynik;
+}
+bool readMatrix(vector< vector<double> > &a_matrix, vector<double> &b_matrix)
 {
 	ifstream file(PATH);
 
@@ -47,8 +68,6 @@ bool readMatrix(vector< vector<double> > &a_matrix, vector<double> &b_matrix, ve
 		b_matrix.push_back(a_matrix[i].back()); 
 		a_matrix[i].pop_back();
 	}
-
-	x_matrix.assign(b_matrix.size(), 0);
 
 	return true;
 }
@@ -101,51 +120,130 @@ void jacobiMethod(vector< vector<double> > &a_matrix, vector<double> &b_matrix, 
 	for (int i = 0; i < x_matrix.size(); i++)
 		cout << 'x' << i + 1 << ": " << x_matrix[i] << endl;
 }
-bool jacobiTest(vector< vector<double> > &a_matrix, vector<double> &b_matrix)
+bool jacobiTest(vector< vector<double> > &a_matrix, vector<double> &b_matrix, vector<double> &x_matrix)
 {
 	vector< vector<double> > tmp_matrix = a_matrix;
 	for (int i = 0; i < b_matrix.size(); i++)
 		tmp_matrix[i].push_back(b_matrix[i]);
 
+	for (int i = 0; i < tmp_matrix.size(); i++)		//szukanie wiersza z zerami
+	{
+		double sum = 0;
+		for (int j = 0; j < tmp_matrix[i].size(); j++)
+		{
+			if (sum != 0)
+				break;
+			if (j == tmp_matrix[i].size() - 1 && tmp_matrix[i][j] != 0)
+			{
+				cout << "Uklad jest sprzeczny!\n";
+				return false;
+			}
+
+			sum += tmp_matrix[i][j];
+		}
+
+		if (sum == 0)
+		{
+			tmp_matrix.erase(tmp_matrix.begin() + i);
+			i--;
+		}
+	}
+
+	// Szukanie powtorzonych (skalowanych) wierszy
 	for (int i = 0; i < tmp_matrix.size(); i++)
 	{
 		for (int i2 = i + 1; i2 < tmp_matrix.size(); i2++)
 		{
-			double tmp = tmp_matrix[i][0] / tmp_matrix[i2][0];
-			for (int k = 1; k < tmp_matrix[0].size(); k++)
+			double test = tmp_matrix[i][0] / tmp_matrix[i2][0];
+			
+			for (int j = 1; j < tmp_matrix[i].size(); j++)
 			{
-				if (k == tmp_matrix[0].size() - 1)
+				if (j == tmp_matrix[i].size() - 1)
 				{
-					if (tmp_matrix[i][k] / tmp_matrix[i2][k] != tmp)
-						cout << "Rownania sprzeczne!\n";
-					else
-						cout << "Rownania nieoznaczone!\n";
+					if (test != tmp_matrix[i][j] / tmp_matrix[i2][j])
+					{
+						cout << "Uklad sprzeczny\n";
+						return false;
+					}
 
-					return false;
+					tmp_matrix.erase(tmp_matrix.begin() + i2);
+					i2--;
 				}
 
-				if (tmp_matrix[i][k] / tmp_matrix[i2][k] != tmp)
+				if (test != tmp_matrix[i][j] / tmp_matrix[i2][j])
 					break;
 			}
 		}
+	}
+
+	if (tmp_matrix.size() < tmp_matrix[0].size() - 1)
+	{
+		cout << "Uklad nieoznaczony!\n";
+		return false;
+	}
+
+	a_matrix.clear();
+	for (int i = 0; i < tmp_matrix.size(); i++)
+	{
+		vector<double> loop_vector;
+		for (int j = 0; j < tmp_matrix[i].size()-1; j++)
+			loop_vector.push_back(tmp_matrix[i][j]);
+
+		a_matrix.push_back(loop_vector);
+	}
+
+	if (det(a_matrix) == 0)
+	{
+		cout << "Uklad sprzeczny!\n";
+		return false;
+	}
+
+	b_matrix.clear();
+	for (int i = 0; i < tmp_matrix.size(); i++)
+		b_matrix.push_back(tmp_matrix[i].back());
+		
+	x_matrix.clear();
+	x_matrix.assign(tmp_matrix[0].size() - 1, 0);
+
+	return true;
+}
+bool isConvergence(vector< vector<double> > matrix)
+{
+	for (int i = 0; i < matrix.size(); i++)
+	{
+		double tmp = abs(matrix[i][i]);
+		double sum = 0;
+
+		for (int j = 0; j < matrix[i].size(); j++)
+		{
+			if (j != i)
+				sum += abs(matrix[i][j]);
+		}
+
+		if (sum > tmp)
+			return false;
 	}
 
 	return true;
 }
 int main(array<System::String ^> ^args)
 {
-	if (!readMatrix(matrixA, matrixB, matrixX))
+	if (!readMatrix(matrixA, matrixB))
 	{
 		cout << "Nie udalo sie otworzyc pliku!\n";
 		system("pause");
 		exit(1);
 	}
 
-	if (!jacobiTest(matrixA, matrixB))
+	if (!jacobiTest(matrixA, matrixB, matrixX))
 	{
 		system("pause");
 		exit(2);
 	}
+
+	if (!isConvergence(matrixA))
+		cout << "Uklad nie jest zbiezny!\n";
+
 	int i;
 	double r;
 	cout << "Podaj ilosc iteracji: ";
