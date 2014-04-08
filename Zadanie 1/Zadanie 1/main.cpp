@@ -1,49 +1,63 @@
 #include "gnuplot_i.hpp"
 #include <cmath>
 #include <string>
-#include "parser.h"
 #include <ctime>
 
 using namespace std;
 
-void menu(string &funkcja);
-string funk;		//pelna funkcja
-bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja, int &iteracja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
-void rysuj_wykres(double a, double b, string &funkcja);
+void menu();
+bool bisekcja(double A, double B, float n, bool iteracje, int &iteracja); //dolna granica przedzialu, gorna granica przedzialu, warunek zatrzymania, czy warunkiem zatrzymania jest ilosc iteracji
+void rysuj_wykres(double a, double b);
 double X, Y; //pierwiastek
 bool pierw; //czy znaleziono
 bool pierwS;	//czy znaleziono pierwiastek w siecznych
 double XS, YS;	//pierwiastki
-bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana, int &iteracja);
+bool sieczne(double A, double B, float n, bool iteracje, bool zmiana, int &iteracja);
 int iteracjaB = 0, iteracjaS = 0;
 int poteguj(int podstawa, int potega);
-/*long double wynikFunkcji(double x, string f)
+long double Horner(double x, double* wsp, int stopien);
+
+long double wynikFunkcji(double x)
 {
-	//Funkcja tymczasowa, parser sie zepsul
-	long double wynik = x*x*x;
-	wynik -= x*x;
-	wynik -= 3 * x;
-	wynik += 7;
+	double wsp[4] = { 1, 0, -1, 1 };
+	double wsp2[5] = { 1, -4, 2, 0, -8 };
+	
+	return Horner(x, wsp2, 4);
+	//return Horner(x, wsp, 3);
+	//return sin(x)+x+1;
+	//return (sin(x)*sin(x)) + 0.5*sin(x) - 0.5;
+	//return (x - 100)*(x - 100) - 1.5;
+	//return pow(2, x) - 5;
+}
+
+long double Horner(double x, double* wsp, int stopien)
+{
+	long double wynik = wsp[0];
+	for (int i = 1; i <=stopien; i++)
+	{
+		wynik *= x;
+		wynik += wsp[i];
+	}
 	return wynik;
-}*/
+}
 
 int main()
 {
-	menu(funk);
+	menu();
 	system("pause");
 	return 0;
 }
 
 
 
-bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja, int &iteracja)
+bool bisekcja(double A, double B, float n, bool iteracje, int &iteracja)
 {
 	long double wynik = 1;
 	while (!((iteracje && n == 0) || (!iteracje && abs(wynik) < n)))
 	{
 		iteracja++;
-		long double wynik = wynikFunkcji((A + B) / 2, funkcja);
-		if (wynik == 0 || (!iteracje && abs(wynik) < n))
+		long double wynik = wynikFunkcji((A + B) / 2);
+		if (abs(wynik) < 9e-7 || (!iteracje && abs(wynik) < n))
 		{
 			cout << endl << "Pierwiastek znaleziony w punkcie: " << (A + B) / 2 << endl;
 			cout << "f(" << (A + B) / 2 << ") = 0 +- (9e-7)" << endl;
@@ -53,11 +67,11 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja, int &
 
 			return true;
 		}
-		if (wynikFunkcji(A, funkcja)*wynik < 0)
+		if (wynikFunkcji(A)*wynik < 0)
 		{
 			B = (A + B) / 2;
 		}
-		if (wynikFunkcji(B, funkcja)*wynik < 0)
+		if (wynikFunkcji(B)*wynik < 0)
 		{
 			A = (A + B) / 2;
 		}
@@ -69,25 +83,21 @@ bool bisekcja(double A, double B, float n, bool iteracje, string &funkcja, int &
 	return false;
 }
 
-void menu(string &funkcja)
+void menu()
 {
 	char zatrzymanie;		//warunek zatrzymania
 	float n;				//ilosc iteracji lub dokladnosc (zalezy od warunku zatrzymania)
 	double a, b;			//przedzialy
 	system("cls");
 
-	cout << "Wprowadz wzor funkcji:" << endl;
-	cin.clear();
-	cin.sync();
-	getline(cin, funkcja);
-	cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
+	cout << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
 	cin >> a;
 	cout << endl << "B: ";
 	cin >> b;
-	while (wynikFunkcji(a, funkcja)*wynikFunkcji(b, funkcja) >= 0)
+	while (wynikFunkcji(a)*wynikFunkcji(b) >= 0)
 	{
 		cout << endl << "Znaki przedzialu sa takie same!" << endl;
-		if (wynikFunkcji((a + b) / 2, funkcja) == 0)
+		if (wynikFunkcji((a + b) / 2) == 0)
 			cout << "ale srodek przedzialu jest miejscem zerowym!" << endl;
 
 		cout << endl << "Podaj przedzial (pamietaj, ze wartosc funkcji na jego krancach musi miec rozne znaki):" << endl << "A: ";
@@ -103,12 +113,12 @@ void menu(string &funkcja)
 	switch (zatrzymanie)
 	{
 	case 'a':
-		pierw = bisekcja(a, b, n, false, funkcja, iteracjaB);
-		pierwS = sieczne(a, b, n, false, funkcja, false, iteracjaS);
+		pierw = bisekcja(a, b, n, false, iteracjaB);
+		pierwS = sieczne(a, b, n, false, false, iteracjaS);
 		break;
 	case 'b':
-		pierw = bisekcja(a, b, n, true, funkcja, iteracjaB);
-		pierwS = sieczne(a, b, n, true, funkcja, false, iteracjaS);
+		pierw = bisekcja(a, b, n, true, iteracjaB);
+		pierwS = sieczne(a, b, n, true, false, iteracjaS);
 		break;
 	}
 	if (pierw)
@@ -130,10 +140,10 @@ void menu(string &funkcja)
 
 	cout << endl << "Iteracji przy bisekcji: " << iteracjaB << endl << "Iteracja przy siecznych: " << iteracjaS << endl;
 
-	rysuj_wykres(a, b, funkcja);
+	rysuj_wykres(a, b);
 }
 
-void rysuj_wykres(double a, double b, string &funkcja)
+void rysuj_wykres(double a, double b)
 {
 	if (!(Gnuplot::set_GNUPlotPath("E:/gnuplot/bin") || Gnuplot::set_GNUPlotPath("C:/gnuplot/bin")))
 	{
@@ -149,7 +159,7 @@ void rysuj_wykres(double a, double b, string &funkcja)
 	try
 	{
 		Gnuplot* wykres = new Gnuplot;
-		wykres->set_title("Wykres funkcji " + funkcja + " na przedziale <" + to_string(a) + ", " + to_string(b) + ">");
+		wykres->set_title("Wykres zadanej funkcji na przedziale <" + to_string(a) + ", " + to_string(b) + ">");
 		wykres->set_style("lines");
 		wykres->set_xlabel("X");
 		wykres->set_ylabel("Y");
@@ -159,9 +169,9 @@ void rysuj_wykres(double a, double b, string &funkcja)
 		for (double i = a; i <= b; i += 0.1)
 		{
 			x.push_back(i);
-			y.push_back(wynikFunkcji(i, funkcja));
+			y.push_back(wynikFunkcji(i));
 		}
-		wykres->plot_xy(x, y, funkcja);
+		wykres->plot_xy(x, y);
 
 		if (pierw || pierwS)
 		{
@@ -198,19 +208,19 @@ void rysuj_wykres(double a, double b, string &funkcja)
 	}
 }
 
-bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool zmiana, int &iteracja)
+bool sieczne(double A, double B, float n, bool iteracje, bool zmiana, int &iteracja)
 {
 	long double wynik = 1;
 	while (!((iteracje && n == 0) || (!iteracje && abs(wynik) < n)))
 	{
 		iteracja++;
-		double y1 = wynikFunkcji(A, funkcja);
-		double y2 = wynikFunkcji(B, funkcja);
-		double a = (y1 - y2) / (A - B);
-		double b = y1 - a*A;
-		double x0 = -b / a;
-		long double wynik = wynikFunkcji(x0, funkcja);
-		if (wynik == 0 || (!iteracje && abs(wynik) < n ))
+		double y1 = wynikFunkcji(A);
+		double y2 = wynikFunkcji(B);
+		double a = y1 / (y2 - y1);
+		a *= (B - A);
+		double x0 = A - a;
+		long double wynik = wynikFunkcji(x0);
+		if (abs(wynik) < 9e-7 || (!iteracje && abs(wynik) < n))
 		{
 			cout << endl << "Pierwiastek znaleziony w punkcie: " << x0 << endl;
 			cout << "f(" << x0 << ") = 0 +- (9e-7)" << endl;
@@ -220,7 +230,6 @@ bool sieczne(double A, double B, float n, bool iteracje, string &funkcja, bool z
 
 			return true;
 		}
-
 		if (zmiana)
 		{
 			B = x0;
