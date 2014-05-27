@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int main(array<System::String ^> ^args)
+int main()
 {
 	char wyb;
 	int wezly;

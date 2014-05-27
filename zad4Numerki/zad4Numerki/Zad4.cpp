@@ -128,7 +128,7 @@ double GaussaCzebyszewa(int t)
 
 	Iteration = 0;
 
-	for (;;)
+	/*for (;;)
 	{
 		Iteration++;
 
@@ -153,7 +153,17 @@ double GaussaCzebyszewa(int t)
 		c += c1 + c2;
 		if (abs(c1) + abs(c2) <= epsilon)
 			return c;
+	}*/
+	for (int i = 1; i != t; i++)
+	{
+		double X = czebyszew(-1, 1, i, t);
+		//double x1 = (d(-a, b) * X) + d(a, b);
+		//double x2 = (d(b, -a) * X) + d(-a, -b);
+		c += funkcja(X);
+		//c2 += funkcja(x2);
 	}
+	c *= w;
+	return c;
 }
 
 /**
