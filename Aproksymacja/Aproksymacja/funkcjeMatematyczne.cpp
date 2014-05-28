@@ -109,6 +109,8 @@ vector<vector<double>> wielomiany(int stopien)
 	return wspolczynniki;
 }
 
+/*
+Okazaly sie niepotrzebne
 vector<double> wezlyCzebyszewa(double A, double B, int iloscWezlow)
 {
 	vector<double> wezly;
@@ -141,7 +143,7 @@ vector<double> mnozWielomiany(vector<double> wielomian1, vector<double> wielomia
 	}
 
 	return wynikowy;
-}
+}*/
 
 vector<double> sumujWielomiany(vector<double> wielomian1, vector<double> wielomian2)
 {
